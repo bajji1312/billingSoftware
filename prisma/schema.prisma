@@ -1,0 +1,55 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./billing.db"
+}
+
+model Customer {
+  id        Int      @id @default(autoincrement())
+  name      String
+  phone     String?
+  email     String?
+  address   String?
+  gstNumber String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  bills     Bill[]
+}
+
+model Bill {
+  id              Int        @id @default(autoincrement())
+  billNumber      String     @unique
+  invoiceNumber          String?
+  date                   DateTime   @default(now())
+  dueDate                DateTime?
+  deliveryAddress        String?
+  purchaseOrderNumber    String?
+  purchaseOrderDate      String?
+  deliveryChallan        String?
+  customerId      Int
+  customer        Customer   @relation(fields: [customerId], references: [id])
+  items      BillItem[]
+  subtotal   Float      @default(0)
+  taxPercent Float      @default(18)
+  taxAmount  Float      @default(0)
+  discount   Float      @default(0)
+  total      Float      @default(0)
+  notes      String?
+  status     String     @default("unpaid")
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+}
+
+model BillItem {
+  id          Int    @id @default(autoincrement())
+  billId      Int
+  bill        Bill   @relation(fields: [billId], references: [id], onDelete: Cascade)
+  description String
+  hsnCode     String?
+  quantity    Float
+  rate        Float
+  amount      Float
+}
