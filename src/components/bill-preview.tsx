@@ -223,7 +223,15 @@ export function BillPreview({ bill }: { bill: Bill }) {
  </tbody>
  <tfoot>
  <tr>
- <td colSpan={4} rowSpan={bill.discount > 0 ? 5 : 4} className="border border-black"></td>
+ <td colSpan={4} rowSpan={bill.discount > 0 ? 5 : 4} className="border border-black p-4">
+ <div className="text-xs font-bold text-black">
+ <p className="mb-1">BANK DETAILS:</p>
+ <p>Monisa Printers</p>
+ <p>Indian Overseas Bank</p>
+ <p>A/c No: 130733000000004</p>
+ <p>IFSC Code: IOBA0001307 (Broadway Branch)</p>
+ </div>
+ </td>
  <td className="py-2 px-4 text-sm font-bold text-black border border-black">Subtotal</td>
  <td className="py-2 px-4 text-sm text-right font-bold text-black border border-black">{formatCurrency(bill.subtotal)}</td>
  </tr>
