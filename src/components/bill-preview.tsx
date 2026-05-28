@@ -147,7 +147,7 @@ export function BillPreview({ bill }: { bill: Bill }) {
  <div className="text-right">
  <h2 className="text-2xl font-bold text-black">TAX INVOICE</h2>
  {bill.invoiceNumber && (
- <p className="text-sm font-bold text-black mt-1">Invoice #: {bill.invoiceNumber}</p>
+ <p className="text-base font-bold text-black mt-1">Invoice #: {bill.invoiceNumber}</p>
  )}
  <div className="flex justify-end gap-4 text-sm mt-1">
  <span className="text-black">Date:</span>
@@ -159,7 +159,7 @@ export function BillPreview({ bill }: { bill: Bill }) {
  {/* Bill Details & Customer */}
  <div className="grid grid-cols-2 mb-4 border border-black">
  <div className="p-4 border-r border-black">
- <h3 className="text-sm font-bold text-black uppercase tracking-wider mb-1">Bill To</h3>
+ <h3 className="text-sm font-bold text-black uppercase tracking-wider mb-1">Bill To:</h3>
  <p className="text-sm font-bold text-black">{bill.customer.name}</p>
  {bill.customer.address && (
  <p className="text-sm text-black">{bill.customer.address}</p>
@@ -174,10 +174,7 @@ export function BillPreview({ bill }: { bill: Bill }) {
  <p className="text-sm text-black font-bold">GST NO: {bill.customer.gstNumber}</p>
  )}
  {bill.deliveryAddress && (
- <p className="text-sm font-bold text-black">
- <span className="font-bold">Delivery Address: </span>
- <span className="font-bold">{bill.deliveryAddress}</span>
- </p>
+ <p className="border-t border-black mt-2 pt-2 text-sm text-black"><span className="font-bold">Delivery Address: </span>{bill.deliveryAddress}</p>
  )}
  </div>
  <div className="p-4">
@@ -224,7 +221,7 @@ export function BillPreview({ bill }: { bill: Bill }) {
  <tfoot>
  <tr>
  <td colSpan={4} rowSpan={bill.discount > 0 ? 5 : 4} className="border border-black p-4">
- <div className="text-xs font-bold text-black">
+ <div className="text-sm font-bold text-black leading-tight">
  <p className="mb-1">BANK DETAILS:</p>
  <p>Monisa Printers</p>
  <p>Indian Overseas Bank</p>
@@ -264,7 +261,7 @@ export function BillPreview({ bill }: { bill: Bill }) {
  {/* Signature */}
  <div className="mt-10 flex justify-end pr-12">
  <div className="text-right">
- <p className="text-xl font-bold text-black"><span style={{ fontFamily: "Arial, sans-serif" }}>For </span><span style={{ fontFamily: "'Brush 455 BT', 'Brush Script MT', cursive" }}>Monisa Printers,</span></p>
+ <p className="text-xl font-bold text-black text-right"><span style={{ fontFamily: "Arial, sans-serif" }}>For </span><span style={{ fontFamily: "'Brush 455 BT', 'Brush Script MT', cursive" }}>Monisa Printers,</span></p>
  </div>
  </div>
 
