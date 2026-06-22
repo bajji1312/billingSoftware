@@ -5,14 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { Plus, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-
-const PREDEFINED_ITEMS = [
-  { description: "CT Scan Cover", rate: 4.28, hsnCode: "4819" },
-  { description: "MRI Scan Cover", rate: 4.28, hsnCode: "4819" },
-  { description: "Doctor,S Order", rate: 100, hsnCode: "" },
-  { description: "X-Ray Cover Size - 21 x 15 inches", rate: 15, hsnCode: "" },
-  { description: "Discharge Summary Folder", rate: 9.50, hsnCode: "" },
-];
+import { PREDEFINED_ITEMS } from "@/lib/predefined-items";
 
 interface BillItem {
   description: string;
@@ -105,8 +98,10 @@ export default function EditBillPage() {
       updated[index].description = value;
     } else if (field === "isCustom") {
       updated[index].isCustom = value === "true";
-    } else {
+    } else if (field === "quantity" || field === "rate") {
       updated[index][field] = parseFloat(value) || 0;
+    } else if (field === "hsnCode") {
+      updated[index].hsnCode = value;
     }
     setItems(updated);
   };

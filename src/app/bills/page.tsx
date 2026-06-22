@@ -5,10 +5,30 @@ import { FileText } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
-export default async function BillsPage() {
+type BillsSearchParams = {
+  [key: string]: string | string[] | undefined;
+};
+
+export default async function BillsPage({ searchParams }: { searchParams: Promise<BillsSearchParams> }) {
+  const resolvedSearchParams = await searchParams;
+  const sort = (resolvedSearchParams?.sort as string) || "";
+  const dirParam = ((resolvedSearchParams?.dir as string) || "").toLowerCase();
+  const dir = dirParam === "asc" ? "asc" : "desc";
+
+  let orderBy: any = { createdAt: "desc" };
+  if (sort === "invoice") {
+    orderBy = [{ invoiceNumber: dir }, { billNumber: dir }];
+  } else if (sort === "date") {
+    orderBy = { date: dir };
+  } else if (sort === "amount") {
+    orderBy = { total: dir };
+  } else if (sort === "customer") {
+    orderBy = { customer: { name: dir } };
+  }
+
   const bills = await prisma.bill.findMany({
     include: { customer: true, items: true },
-    orderBy: { createdAt: "desc" },
+    orderBy,
   });
 
   return (
@@ -44,16 +64,16 @@ export default async function BillsPage() {
             <thead>
               <tr className="bg-gray-50 border-b border-border">
                 <th className="text-left py-3 px-4 text-xs font-semibold text-muted uppercase tracking-wider">
-                  Invoice #
+                  <Link href={`/bills?sort=invoice&dir=${sort === "invoice" && dir === "asc" ? "desc" : "asc"}`}>Invoice #{sort === "invoice" ? (dir === "asc" ? " ▲" : " ▼") : ""}</Link>
                 </th>
                 <th className="text-left py-3 px-4 text-xs font-semibold text-muted uppercase tracking-wider">
-                  Customer
+                  <Link href={`/bills?sort=customer&dir=${sort === "customer" && dir === "asc" ? "desc" : "asc"}`}>Customer{sort === "customer" ? (dir === "asc" ? " ▲" : " ▼") : ""}</Link>
                 </th>
                 <th className="text-left py-3 px-4 text-xs font-semibold text-muted uppercase tracking-wider">
-                  Date
+                  <Link href={`/bills?sort=date&dir=${sort === "date" && dir === "asc" ? "desc" : "asc"}`}>Date{sort === "date" ? (dir === "asc" ? " ▲" : " ▼") : ""}</Link>
                 </th>
                 <th className="text-right py-3 px-4 text-xs font-semibold text-muted uppercase tracking-wider">
-                  Amount
+                  <Link href={`/bills?sort=amount&dir=${sort === "amount" && dir === "asc" ? "desc" : "asc"}`}>Amount{sort === "amount" ? (dir === "asc" ? " ▲" : " ▼") : ""}</Link>
                 </th>
                 <th className="text-center py-3 px-4 text-xs font-semibold text-muted uppercase tracking-wider">
                   Status
