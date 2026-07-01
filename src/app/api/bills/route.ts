@@ -13,20 +13,35 @@ export async function POST(request: NextRequest) {
   const body = await request.json();
   const { customerId, items, taxPercent, discount, notes, date, invoiceNumber, deliveryAddress, purchaseOrderNumber, purchaseOrderDate, deliveryChallan } = body;
 
-  const subtotal = items.reduce(
-    (sum: number, item: { quantity: number; rate: number }) =>
-      sum + item.quantity * item.rate,
-    0
+  const subtotal = Number(
+    items.reduce(
+      (sum: number, item: { quantity: number; rate: number }) =>
+        sum + item.quantity * item.rate,
+      0
+    ).toFixed(2)
   );
-  const taxAmount = (subtotal * (taxPercent || 18)) / 100;
-  const total = subtotal + taxAmount - (discount || 0);
+  const taxAmount = Number(((subtotal * (taxPercent || 18)) / 100).toFixed(2));
+  const total = Number((subtotal + taxAmount - (discount || 0)).toFixed(2));
 
   // Generate a unique bill number
   const now = new Date();
   const year = now.getFullYear().toString().slice(-2);
   const month = (now.getMonth() + 1).toString().padStart(2, "0");
-  const count = await prisma.bill.count();
-  const billNumber = `MP-${year}${month}-${String(count + 1).padStart(4, "0")}`;
+  const prefix = `MP-${year}${month}-`;
+  let counter = await prisma.bill.count();
+  let billNumber = `${prefix}${String(counter + 1).padStart(4, "0")}`;
+
+  while (true) {
+    const existingBill = await prisma.bill.findUnique({
+      where: { billNumber },
+      select: { id: true },
+    });
+
+    if (!existingBill) break;
+
+    counter += 1;
+    billNumber = `${prefix}${String(counter + 1).padStart(4, "0")}`;
+  }
 
   const bill = await prisma.bill.create({
     data: {
@@ -50,8 +65,8 @@ export async function POST(request: NextRequest) {
             description: item.description,
             hsnCode: item.hsnCode || null,
             quantity: item.quantity,
-            rate: item.rate,
-            amount: item.quantity * item.rate,
+            rate: Number(item.rate.toFixed(3)),
+            amount: Number((item.quantity * item.rate).toFixed(2)),
           })
         ),
       },

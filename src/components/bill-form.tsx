@@ -157,7 +157,7 @@ export function BillForm() {
   };
 
   const formatINR = (n: number) =>
-    new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR" }).format(n);
+    new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
@@ -338,14 +338,15 @@ export function BillForm() {
               <input
                 className="col-span-2 border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary-light focus:border-primary-light outline-none"
                 type="number"
-                min="0.01"
-                step="0.01"
+                min="0.001"
+                step="0.001"
+                inputMode="decimal"
                 value={item.rate || ""}
                 onChange={(e) => updateItem(index, "rate", e.target.value)}
                 required
               />
               <div className="col-span-2 text-sm font-medium text-gray-700 px-1 py-2">
-                {formatINR(item.quantity * item.rate)}
+                {Number(item.quantity * item.rate).toFixed(2)}
               </div>
               <button
                 type="button"

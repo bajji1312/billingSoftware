@@ -110,6 +110,8 @@ export function BillPreview({ bill }: { bill: Bill }) {
  const cgstPercent = bill.taxPercent / 2;
  const sgstAmount = (bill.subtotal * sgstPercent) / 100;
  const cgstAmount = (bill.subtotal * cgstPercent) / 100;
+ const formatRate = (value: number) => Number(value).toFixed(3);
+ const formatAmount = (value: number) => Number(value).toFixed(2);
 
  return (
  <div>
@@ -213,8 +215,8 @@ export function BillPreview({ bill }: { bill: Bill }) {
  <td className="py-3 px-4 text-sm font-bold border border-black">{item.description}</td>
  <td className="py-3 px-4 text-sm border border-black text-center">{item.hsnCode || ""}</td>
  <td className="py-3 px-4 text-sm font-bold border border-black text-center">{item.quantity}</td>
- <td className="py-3 px-4 text-sm border border-black text-center">{formatCurrency(item.rate)}</td>
- <td className="py-3 px-4 text-sm text-right font-bold border border-black">{formatCurrency(item.amount)}</td>
+ <td className="py-3 px-4 text-sm border border-black text-center">{formatRate(item.rate)}</td>
+ <td className="py-3 px-4 text-sm text-right font-bold border border-black">{formatAmount(item.amount)}</td>
  </tr>
  ))}
  </tbody>
