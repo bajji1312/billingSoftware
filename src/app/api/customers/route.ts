@@ -4,9 +4,18 @@ import { prisma } from "@/lib/db";
 export async function GET() {
   const customers = await prisma.customer.findMany({
     orderBy: { name: "asc" },
-    include: { _count: { select: { bills: true } } },
+    include: {
+      _count: { select: { bills: true } },
+      bills: { select: { total: true } },
+    },
   });
-  return NextResponse.json(customers);
+
+  const customersWithTotals = customers.map((customer) => ({
+    ...customer,
+    totalBillValue: customer.bills.reduce((sum, bill) => sum + (bill.total ?? 0), 0),
+  }));
+
+  return NextResponse.json(customersWithTotals);
 }
 
 export async function POST(request: NextRequest) {

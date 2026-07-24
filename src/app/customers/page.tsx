@@ -11,6 +11,7 @@ interface Customer {
   address?: string | null;
   gstNumber?: string | null;
   _count?: { bills: number };
+  totalBillValue?: number | null;
 }
 
 export default function CustomersPage() {
@@ -83,6 +84,14 @@ export default function CustomersPage() {
       alert(data.error || "Failed to delete customer");
     }
   };
+
+  const formatCurrency = (value: number | null | undefined) =>
+    new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(value ?? 0);
 
   if (loading) {
     return (
@@ -229,6 +238,9 @@ export default function CustomersPage() {
                   Bills
                 </th>
                 <th className="text-right py-3 px-4 text-xs font-semibold text-muted uppercase tracking-wider">
+                  Total Value
+                </th>
+                <th className="text-right py-3 px-4 text-xs font-semibold text-muted uppercase tracking-wider">
                   Action
                 </th>
               </tr>
@@ -250,6 +262,9 @@ export default function CustomersPage() {
                     <span className="bg-blue-50 text-blue-600 text-xs font-medium px-2 py-0.5 rounded-full">
                       {customer._count?.bills || 0}
                     </span>
+                  </td>
+                  <td className="py-3 px-4 text-right text-sm font-medium text-gray-700">
+                    {formatCurrency(customer.totalBillValue)}
                   </td>
                   <td className="py-3 px-4 text-right">
                     <button

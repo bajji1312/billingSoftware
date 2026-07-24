@@ -10,6 +10,7 @@ interface BillItem {
   hsnCode: string;
   quantity: number;
   rate: number;
+  rateInput: string;
   isCustom: boolean;
 }
 
@@ -36,7 +37,7 @@ export function BillForm() {
   const [notes, setNotes] = useState("");
   const [billDate, setBillDate] = useState(new Date().toISOString().split("T")[0]);
   const [items, setItems] = useState<BillItem[]>([
-    { description: "", hsnCode: "", quantity: 1, rate: 0, isCustom: false },
+    { description: "", hsnCode: "", quantity: 1, rate: 0, rateInput: "0", isCustom: false },
   ]);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
@@ -49,7 +50,7 @@ export function BillForm() {
   }, []);
 
   const addItem = () => {
-    setItems([...items, { description: "", hsnCode: "", quantity: 1, rate: 0, isCustom: false }]);
+    setItems([...items, { description: "", hsnCode: "", quantity: 1, rate: 0, rateInput: "0", isCustom: false }]);
   };
 
   const removeItem = (index: number) => {
@@ -69,6 +70,7 @@ export function BillForm() {
       updated[index].quantity = parseFloat(value) || 0;
     } else if (field === "rate") {
       updated[index].rate = parseFloat(value) || 0;
+      updated[index].rateInput = value;
     }
     setItems(updated);
   };
@@ -76,7 +78,7 @@ export function BillForm() {
   const handleDescriptionChange = (index: number, value: string) => {
     const updated = [...items];
     if (value === "__custom__") {
-      updated[index] = { ...updated[index], isCustom: true, description: "", hsnCode: "" };
+      updated[index] = { ...updated[index], isCustom: true, description: "", hsnCode: "", rateInput: updated[index].rateInput };
     } else {
       const preset = PREDEFINED_ITEMS.find((p) => p.description === value);
       updated[index] = {
@@ -84,6 +86,7 @@ export function BillForm() {
         isCustom: false,
         description: value,
         rate: preset ? preset.rate : updated[index].rate,
+        rateInput: preset ? String(preset.rate) : updated[index].rateInput,
         hsnCode: preset ? preset.hsnCode : updated[index].hsnCode,
       };
     }
@@ -337,11 +340,9 @@ export function BillForm() {
               />
               <input
                 className="col-span-2 border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary-light focus:border-primary-light outline-none"
-                type="number"
-                min="0.001"
-                step="0.001"
+                type="text"
                 inputMode="decimal"
-                value={item.rate || ""}
+                value={item.rateInput}
                 onChange={(e) => updateItem(index, "rate", e.target.value)}
                 required
               />
